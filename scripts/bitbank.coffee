@@ -18,7 +18,6 @@ fiats = ['btc_jpy', 'xrp_jpy', 'ltc_btc', 'eth_btc', 'mona_jpy', 'mona_btc', 'bc
 
 module.exports = (robot) ->
   robot.respond /balance/i, (bot) ->
-    bot.reply 'now you have'
     PRIVATE_API.getAsset().then (res) ->
       for asset, index in res.assets
         bot.send asset.onhand_amount + ' ' + asset.asset
