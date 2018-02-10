@@ -16,10 +16,36 @@ PRIVATE_API = BITBANK.privateApi process.env.BITBANK_API_KEY, process.env.BITBAN
 #  利用可能なフィアット一覧
 fiats = ['btc_jpy', 'xrp_jpy', 'ltc_btc', 'eth_btc', 'mona_jpy', 'mona_btc', 'bcc_jpy', 'bcc_btc']
 
-# @todo 全通貨対応
 module.exports = (robot) ->
   robot.respond /balance/i, (bot) ->
     bot.reply 'now you have'
     PRIVATE_API.getAsset().then (res) ->
       for asset, index in res.assets
-        bot.reply asset.onhand_amount + ' ' + asset.asset
+        bot.send asset.onhand_amount + ' ' + asset.asset
+
+# @todo 通貨処理dry
+# xrpの表示
+  robot.respond /xrp/i, (bot) ->
+    PRIVATE_API.getAsset().then (res) ->
+      for asset, index in res.assets
+        if asset.asset is 'xrp'
+          bot.send asset.onhand_amount + ' ' + asset.asset
+          PUBLIC_API.getTicker('xrp_jpy').then (value) ->
+            bot.send 'xrp_jpy ' + value.last + ' jpy'
+            sum = value.last * asset.onhand_amount
+            bot.send 'sum: ' + sum + ' jpy'
+          break
+
+# ethの表示
+  robot.respond /eth/i, (bot) ->
+    PRIVATE_API.getAsset().then (res) ->
+      for asset, index in res.assets
+        if asset.asset is 'eth'
+          bot.send asset.onhand_amount + ' ' + asset.asset
+          PUBLIC_API.getTicker('eth_btc').then (eth_btc) ->
+            PUBLIC_API.getTicker('btc_jpy').then (btc_jpy) ->
+              eth_jpy = eth_btc.last * btc_jpy.last
+              bot.send 'eth_jpy ' + eth_jpy + ' jpy'
+              sum = eth_jpy * asset.onhand_amount
+              bot.send 'sum: ' + sum + ' jpy'
+          break
