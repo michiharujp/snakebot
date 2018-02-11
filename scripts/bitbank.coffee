@@ -4,6 +4,9 @@
 # BITBANK_API_KEY=@@@@@@
 # BITBANK_API_SECRET=@@@@@@
 
+# asyncの有効化
+async = require 'async'
+
 # bitbankを使用する
 BITBANK = require 'node-bitbankcc'
 
@@ -15,6 +18,22 @@ PRIVATE_API = BITBANK.privateApi process.env.BITBANK_API_KEY, process.env.BITBAN
 
 #  利用可能なフィアット一覧
 fiats = ['btc_jpy', 'xrp_jpy', 'ltc_btc', 'eth_btc', 'mona_jpy', 'mona_btc', 'bcc_jpy', 'bcc_btc']
+
+balance = {}
+
+# 決められたフィアットを取ってくるPromiseオブジェクト
+getBalance = (args) ->
+  funcs = []
+  funcs.push PRIVATE_API.getAsset()
+  for fiat, index in fiats
+    funcs.push PUBLIC_API.getTicker(fiat)
+  Promise.all(funcs).then (res) ->
+    for asset, index in res[0].assets
+      balance[asset.asset] = {}
+      balance[asset.asset]['amount'] = asset.onhand_amount
+
+
+getBalance()
 
 module.exports = (robot) ->
   robot.respond /balance/i, (bot) ->
