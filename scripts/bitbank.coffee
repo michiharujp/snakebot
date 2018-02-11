@@ -19,6 +19,17 @@ PRIVATE_API = BITBANK.privateApi process.env.BITBANK_API_KEY, process.env.BITBAN
 #  利用可能なフィアット一覧
 fiats = ['btc_jpy', 'xrp_jpy', 'ltc_btc', 'eth_btc', 'mona_jpy', 'mona_btc', 'bcc_jpy', 'bcc_btc']
 
+# balanceは以下の形を目指す
+# balance = {
+#   'xrp' : {
+#     'amount' : 1800,
+#     'value' : 102,
+#    },
+#    'eth' : {
+#      'amount' : 2,
+#      'value' : 90000,
+#    }
+# }
 balance = {}
 
 # 決められたフィアットを取ってくるPromiseオブジェクト
