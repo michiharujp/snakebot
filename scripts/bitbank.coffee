@@ -28,11 +28,11 @@ module.exports = (robot) ->
     PRIVATE_API.getAsset().then (res) ->
       for asset, index in res.assets
         if asset.asset is 'xrp'
-          bot.send asset.onhand_amount + ' ' + asset.asset
+          bot.send ' amount: ' + asset.onhand_amount + ' ' + asset.asset
           PUBLIC_API.getTicker('xrp_jpy').then (value) ->
-            bot.send 'xrp_jpy ' + value.last + ' jpy'
+            bot.send 'xrp_jpy: ' + value.last + ' jpy'
             sum = value.last * asset.onhand_amount
-            bot.send 'sum: ' + sum + ' jpy'
+            bot.send '    sum: ' + sum + ' jpy'
           break
 
 # ethの表示
@@ -40,11 +40,11 @@ module.exports = (robot) ->
     PRIVATE_API.getAsset().then (res) ->
       for asset, index in res.assets
         if asset.asset is 'eth'
-          bot.send asset.onhand_amount + ' ' + asset.asset
+          bot.send ' amount: ' + asset.onhand_amount + ' ' + asset.asset
           PUBLIC_API.getTicker('eth_btc').then (eth_btc) ->
             PUBLIC_API.getTicker('btc_jpy').then (btc_jpy) ->
               eth_jpy = eth_btc.last * btc_jpy.last
-              bot.send 'eth_jpy ' + eth_jpy + ' jpy'
+              bot.send 'eth_jpy: ' + eth_jpy + ' jpy'
               sum = eth_jpy * asset.onhand_amount
-              bot.send 'sum: ' + sum + ' jpy'
+              bot.send '    sum: ' + sum + ' jpy'
           break
