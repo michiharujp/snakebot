@@ -77,6 +77,9 @@ module.exports = (robot) ->
   robot.respond /asset/i, (bot) ->
     getBalance().then (res) ->
       bot.send 'name | amount | value | sum'
+      bot.send '---------------------------'
       for name, data of res[0]
+        if data['amount'] is 0
+          continue
         bot.send name + ' | ' + data['amount'] + ' | ' + data['value'] + ' | ' + data['sum']
       bot.send 'total asset is ' + res[1] + 'jpy'
