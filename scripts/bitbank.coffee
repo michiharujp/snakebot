@@ -4,8 +4,9 @@
 # BITBANK_API_KEY=@@@@@@
 # BITBANK_API_SECRET=@@@@@@
 
-# asyncの有効化
-async = require 'async'
+os = require 'os'
+# 改行コード
+EOL = os.EOL
 
 # bitbankを使用する
 BITBANK = require 'node-bitbankcc'
@@ -76,10 +77,11 @@ module.exports = (robot) ->
 
   robot.respond /asset/i, (bot) ->
     getBalance().then (res) ->
-      bot.send 'name | amount | value | sum'
-      bot.send '---------------------------'
+      message = 'name | amount | value | sum' + EOL
+      message += '---------------------------' + EOL
       for name, data of res[0]
         if data['amount'] is 0
           continue
-        bot.send name + ' | ' + data['amount'] + ' | ' + data['value'] + ' | ' + data['sum']
-      bot.send 'total asset is ' + res[1] + 'jpy'
+        message += name + ' | ' + data['amount'] + ' | ' + data['value'] + ' | ' + data['sum'] + EOL
+      message += 'total asset is ' + res[1] + 'jpy'
+      bot.send message
